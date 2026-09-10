@@ -52,7 +52,7 @@
 
    IMPLICIT NONE
 
-   CHARACTER (500) :: input_dir,output_dir
+   CHARACTER (500) :: input_dir,output_dir,source_dir
    INTEGER :: t,ncyc,ncyc1,ncyc2,ndt,nfile !! loop counters
    DOUBLE PRECISION :: wtime,wtime0,wtime1,wtime2,wtimet
 
@@ -83,13 +83,13 @@
    endif
 
 !!! Read input file and initialization
-   CALL init0(input_dir,output_dir)
+   CALL init0(input_dir,output_dir,source_dir)
 
 !!! First advect backward
    CALL backwardadvectionmain(input_dir)
 
 !!! Set fossil fabric after backward advection
-   IF(fossilfabric == 1) CALL set_fossil_fabric
+   IF(fossilfabric == 1) CALL set_fossil_fabric(source_dir)
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!! MAIN LOOP: now move forward and compute FSE and LPO !!!
@@ -202,7 +202,7 @@
    IF( (Tinit == Tend .AND. ncyc2 == OutputStep) .OR. (Tinit .NE. Tend .AND. (nfile == OutputStep .OR. t == Tend)) .OR. timesum == timemax) THEN
 
 !!! Set fossil fabric after forward advection
-      IF(((Tinit .NE. Tend .AND. t == Tend) .OR. timesum == timemax) .AND. fossilfabric == 2) CALL set_fossil_fabric
+      IF(((Tinit .NE. Tend .AND. t == Tend) .OR. timesum == timemax) .AND. fossilfabric == 2) CALL set_fossil_fabric(source_dir)
 
       CALL stifftenzsave_mpi(t,output_dir,ncyc2)
 

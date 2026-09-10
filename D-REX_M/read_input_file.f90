@@ -42,7 +42,7 @@
  !! ---------------------------------------------------------------------------
  !! ---------------------------------------------------------------------------
 
-   SUBROUTINE read_input_file(input_dir,output_dir)
+   SUBROUTINE read_input_file(input_dir,output_dir,source_dir)
 
    USE comvar
 
@@ -51,9 +51,9 @@
    !M3E!!!!!!!!!!!!
    include 'mpif.h'
    !M3E!!!!!!!!!!!!
-
+   
    INTEGER :: i
-   CHARACTER (len=500) :: input_dir,output_dir
+   CHARACTER (len=500) :: input_dir,output_dir,source_dir
    CHARACTER(200) :: arg,inputfilename
 !  CHARACTER(200) :: str ! unused
 
@@ -67,9 +67,26 @@
    rankMPI = rankMPI + 1
    !M3E!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-   DO i = 1, iargc()
+   i = 1
+   DO WHILE (i <= iargc())
       CALL getarg(i, arg)
-      if(i==1) inputfilename = arg
+      arg = trim(arg)
+      ! enable defining a source directory for access to DATABASE
+      IF (arg == '--source-dir' .OR. arg == '-D') THEN
+         IF (i < iargc()) THEN
+            i = i + 1
+            CALL getarg(i, source_dir)
+            source_dir = trim(source_dir)
+            if(source_dir(len(source_dir):len(source_dir)) /= "/") source_dir = source_dir//"/"
+         ELSE
+            if(rankMPI .eq. 1 ) write(*,"(a,a)") 'ERROR: missing value after flag ', trim(arg)
+            STOP 1
+         END IF               
+      ELSE 
+         if(iargc()==1) source_dir = '../' 
+         inputfilename = trim(arg)
+      END IF
+      i = i + 1
    END DO
  
    OPEN(unit=15,file=inputfilename)
@@ -80,6 +97,8 @@
       write(*,"(a)") '********************************************************'
       write(*,*)
       write(*,"(a,a)") 'READING INPUT FILE: ',trim(inputfilename)
+      write(*,*)
+      write(*,"(a,a)") 'Using ECOMAN Source directory: ',trim(source_dir)
       write(*,*)
    endif
    !M3E!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
