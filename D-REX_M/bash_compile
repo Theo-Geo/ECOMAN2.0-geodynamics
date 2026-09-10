@@ -3,7 +3,7 @@
 rm *.mod
 rm -r objects/
 
-h5pfc -O3 -qopenmp -o drex_m     \
+h5pfc -O3 -qopenmp -o drex_m.x     \
     precision.f90        \
     DistComm.f90         \
     DistGrid.F90         \

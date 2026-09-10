@@ -12,5 +12,5 @@ cd $PBS_O_WORKDIR
 # set number of threads     
 export OMP_NUM_THREADS=28 
 
- ./vizvisc ../cookbooks/2Dpolar_convection/vizvisc_input.dat
+ ./vizvisc.x ../cookbooks/2Dpolar_convection/vizvisc_input.dat
 

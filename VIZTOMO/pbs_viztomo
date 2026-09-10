@@ -12,10 +12,10 @@ cd $PBS_O_WORKDIR
 # set number of threads     
 export OMP_NUM_THREADS=28 
 
-# ./viztomo ../cookbooks/2Dcartesian_convection/viztomo_input.dat
-# ./viztomo ../cookbooks/2Dpolar_convection/viztomo_input.dat
-# ./viztomo ../cookbooks/2Dpolar_subduction/viztomo_input.dat
-# ./viztomo ../cookbooks/2Dpolar_subduction/viztomo_input_spo.dat
-# ./viztomo ../cookbooks/3Dcartesian_sinkingslab/viztomo_input.dat
-# ./viztomo ../cookbooks/3Dspherical_sinkingslab/viztomo_input.dat
- ./viztomo ../cookbooks/3Dspherical_global/viztomo_input.dat
+# ./viztomo.x ../cookbooks/2Dcartesian_convection/viztomo_input.dat
+# ./viztomo.x ../cookbooks/2Dpolar_convection/viztomo_input.dat
+# ./viztomo.x ../cookbooks/2Dpolar_subduction/viztomo_input.dat
+# ./viztomo.x ../cookbooks/2Dpolar_subduction/viztomo_input_spo.dat
+# ./viztomo.x ../cookbooks/3Dcartesian_sinkingslab/viztomo_input.dat
+# ./viztomo.x ../cookbooks/3Dspherical_sinkingslab/viztomo_input.dat
+ ./viztomo.x ../cookbooks/3Dspherical_global/viztomo_input.dat

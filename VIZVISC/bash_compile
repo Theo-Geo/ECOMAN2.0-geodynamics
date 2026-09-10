@@ -1,6 +1,6 @@
 #!/bin/bash
 
-h5pfc -qopenmp -o vizvisc    \
+h5pfc -qopenmp -o vizvisc.x    \
 	module.f90           \
 	VIZVISC.f90	     \
 	read_input_file.f90  \
