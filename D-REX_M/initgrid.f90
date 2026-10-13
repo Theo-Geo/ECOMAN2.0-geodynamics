@@ -74,9 +74,7 @@
    DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: Rhodum,Vpdum,Vsdum
 
    ! input and output directories
-   CHARACTER (len=500) :: input_dir,output_dir
-   CHARACTER (len=*) :: source_dir
-   CHARACTER (len(trim(source_dir))) :: source_str  
+   CHARACTER (len=500) :: input_dir,output_dir,source_dir 
 
    CHARACTER(500) :: str
 
@@ -535,21 +533,21 @@
       ALLOCATE(Rhodum(ptnum),Vpdum(ptnum),Vsdum(ptnum))
 
       
-      if (rankMPI .eq. 1 ) then
-         write(*,"(a,a)") 'Using ECOMAN Source directory: ',trim(source_dir)
-         write(*,*)
-      endif
-      source_str = trim(source_dir)
-      inquire(file=(source_str//"DATABASES/MMA-EoS/pyrolite.h5"), exist=there )
-      if (.not. there) then
-         write(*,"(a,a)") 'file not found: ',(source_str//"DATABASES/MMA-EoS/pyrolite.h5")
-         STOP 0
-      endif
+      ! if (rankMPI .eq. 1 ) then
+      !    write(*,"(a,a)") 'Using ECOMAN Source directory: ',trim(source_dir)
+      !    write(*,*)
+      ! endif
+      ! source_str = trim(source_dir)
+      ! inquire(file=(source_str//"DATABASES/MMA-EoS/pyrolite.h5"), exist=there )
+      ! if (.not. there) then
+      !    write(*,"(a,a)") 'file not found: ',(source_str//"DATABASES/MMA-EoS/pyrolite.h5")
+      !    STOP 0
+      ! endif
 
       CALL H5open_f (error)
       IF(eosmod == 1) CALL H5Fopen_f(trim(source_dir)//"DATABASES/MMA-EoS/dunite.h5", H5F_ACC_RDONLY_F, file_id, error)
       IF(eosmod == 2) CALL H5Fopen_f(trim(source_dir)//"DATABASES/MMA-EoS/hartzburgite.h5", H5F_ACC_RDONLY_F, file_id, error)
-      IF(eosmod == 3) CALL H5Fopen_f(source_str//"DATABASES/MMA-EoS/pyrolite.h5", H5F_ACC_RDONLY_F, file_id, error)
+      IF(eosmod == 3) CALL H5Fopen_f(trim(source_dir)//"DATABASES/MMA-EoS/pyrolite.h5", H5F_ACC_RDONLY_F, file_id, error)
       IF(eosmod == 4) CALL H5Fopen_f(trim(source_dir)//"DATABASES/MMA-EoS/morb.h5", H5F_ACC_RDONLY_F, file_id, error)
       IF(eosmod == 5) CALL H5Fopen_f(trim(source_dir)//"DATABASES/MMA-EoS/pyroxenite.h5", H5F_ACC_RDONLY_F, file_id, error)
 
@@ -678,8 +676,7 @@
    CALL H5open_f (error)
 
    !  Open file using default properties.
-   ! trim(source_dir) 
-   CALL H5Fopen_f('../'//'D-REX_S/fossilfabric.h5', H5F_ACC_RDONLY_F, file_id, error)
+   CALL H5Fopen_f(trim(source_dir)//'D-REX_S/fossilfabric.h5', H5F_ACC_RDONLY_F, file_id, error)
 
    CALL loadsave_integer(0,1,file_id,1,H5T_NATIVE_INTEGER,sbfmod0,'sbfmod',0)
 
