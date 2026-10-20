@@ -957,6 +957,7 @@
    real(kind=double), allocatable :: scrR11(:),scrR12(:),scrR13(:)
    real(kind=double), allocatable :: scrR2(:,:)
    real(kind=double), allocatable :: scrR3(:,:,:)
+   real(kind=double), allocatable :: scrR4(:,:,:)
 
    ! Get MPI info
    call MPI_COMM_RANK(MPI_COMM_WORLD,rankMPI,errMPI)
@@ -1313,18 +1314,66 @@
 
    deallocate(scrR11,scrR12,scrR13)
 
+   ! FSE
+   allocate(scrR3(3,3,mrkdist))
+   call DistMrkValR(3,3,Fij(1:3,1:3,1:marknum00),scrR3)
+   m1 = 0
+   do m = 1,mrkdist
+      if(rkscr1(m) < 100) then
+         m1 = m1 + 1
+         do j = 1,3
+            scrR3(1,j,m1) = scrR3(1,j,m)
+            scrR3(2,j,m1) = scrR3(2,j,m)
+            scrR3(3,j,m1) = scrR3(3,j,m)
+         end do
+      endif 
+   end do
+   dims(1) = 3 
+   dims(2) = 3 
+   dims(3) = off1(rankMPI+1) - off1(rankMPI)
+   offs(1) = 0 
+   offs(2) = 0 
+   offs(3) = off1(rankMPI) - 1
+   call SaveDatasetMPI_double(.true.,groupH5,'fse',3,dims,allmarknumsav,offs,scrR3)
+ 
+   if(yinyang == 2) then
+
+      call DistMrkValR(3,3,Fij(1:3,1:3,marknum00+1:marknum),scrR3)
+      m1 = 0
+      do m = 1,mrkdist
+         if(rkscr2(m) < 100) then
+            m1 = m1 + 1
+            do j = 1,3
+               scrR3(1,j,m1) = scrR3(1,j,m)
+               scrR3(2,j,m1) = scrR3(2,j,m)
+               scrR3(3,j,m1) = scrR3(3,j,m)
+            end do
+         endif 
+      end do
+      dims(1) = 3
+      dims(2) = 3
+      dims(3) = off2(rankMPI+1) - off2(rankMPI)
+      offs(1) = 0
+      offs(2) = 0
+      offs(3) = off2(rankMPI) - 1
+      call SaveDatasetMPI_double(.false.,groupH5,'fse',3,dims,allmarknumsav,offs,scrR3)
+
+   endif
+
+   deallocate(scrR3)
+
    ! acs 
-   allocate(scrR3(size,9,mrkdist))
-   call DistMrkValR(size,9,acs(1:size,1:3,1:3,1:marknum00),scrR3)
+   allocate(scrR4(size,9,mrkdist))
+   call DistMrkValR(size,9,acs(1:size,1:3,1:3,1:marknum00),scrR4)
    m1 = 0
    do m = 1,mrkdist
       if(rkscr1(m) < 100) then
          m1 = m1 + 1
          do k = 1,size
             do j = 1,9
-               scrR3(k,j,m1) = scrR3(k,j,m)
-               scrR3(k,j,m1) = scrR3(k,j,m)
-               scrR3(k,j,m1) = scrR3(k,j,m)
+               scrR4(k,j,m1) = scrR4(k,j,m)
+               scrR4(k,j,m1) = scrR4(k,j,m)
+               scrR4(k,j,m1) = scrR4(k,j,m)
             end do
          end do
       endif
@@ -1335,10 +1384,9 @@
    offs(1) = 0
    offs(2) = 0
    offs(3) = off1(rankMPI) - 1
-   call SaveDatasetMPI_double(.true.,groupH5,'acs',3,dims,allmarknumsav,offs,scrR3)
+   call SaveDatasetMPI_double(.true.,groupH5,'acs',3,dims,allmarknumsav,offs,scrR4)
    
-   deallocate(scrR3)
-
+   deallocate(scrR4)
 
    ! Rho / T / P / Sav
    IF(fsemod == 0 .OR. sbfmod > 0) THEN

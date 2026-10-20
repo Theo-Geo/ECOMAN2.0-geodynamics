@@ -86,6 +86,7 @@ CHARACTER (len(trim(output_dir))) :: str2
 CHARACTER (4) :: dt_str4
 INTEGER(HID_T)  :: file_id, group_id, dataspace_id, dataset_id, attr_id, dcpl,memtype ! Handles
 INTEGER     ::   error  ! Error flag
+
    
 str1=trim(cijkl_dir)
 str2=trim(output_dir)
@@ -499,6 +500,7 @@ IF(psitomomod > 0) THEN
    tf_density_normalized = 0
    rotation_from_north_deg = 0.0d0
 
+   rad2deg = 180./pi
    !Cartesian coordinates
    if(cartspher == 1) then
       long_origin_deg = 0.0d0                              
@@ -523,7 +525,7 @@ IF(psitomomod > 0) THEN
    !Headers
    write(10,'(*(e12.5, ", "))') model_radius_km, long_origin_deg, lat_origin_deg, rotation_from_north_deg 
    write(10,'(*(g0, ", "))') num_nodes_in_longitude, num_nodes_in_latitude, num_nodes_in_radial        
-   write(10,'(*(e12.5, ", "))') dlon_deg, dlat_deg, delevation_km
+   write(10,'(*(e12.5, ", "))') dlon_deg, dlat_deg, delevation_km ! remove , 
    write(10,'(*(g0, ", "))') tf_density_normalized
    !Coordinates, elastic moduli, density
    !DO yyy=1,yinyang
